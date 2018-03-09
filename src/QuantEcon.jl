@@ -11,6 +11,7 @@ using DSP: TFFilter, freqz
 using Primes: primes
 using Compat: view, @compat
 using StatsBase:ecdf
+using DataFrames
 
 @static if isdefined(Base, :Iterators)
     using Base.Iterators: cycle, take
