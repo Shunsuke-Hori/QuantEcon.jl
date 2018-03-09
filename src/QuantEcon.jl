@@ -135,6 +135,9 @@ export
 # sampler
     MVNSampler,
 
+# filter
+    hp_filter,
+
 # modeltools
     @def_sim
 
@@ -162,6 +165,7 @@ include("quad.jl")
 include("quadsums.jl")
 include("zeros.jl")
 include("optimization.jl")
+include("filter.jl")
 include("modeltools/utility.jl")
 include("modeltools/types.jl")
 
