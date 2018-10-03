@@ -11,7 +11,9 @@
     data["data"] = 100*log.(data["empl"])
     @testset "test hp filter" begin
         data["hp_c"], data["hp_t"] = hp_filter(data["data"], 1600)
+        data["hp_k_c"], data["hp_k_t"] = hp_filter(data["data"], 1600, :kalmna)
         @test isapprox(data["hp_c"], data["hp_c_mat"])
+        @test isapprox(data["hp_t"], data["hp_k_t"])
     end
 
     @testset "test hamilton filter" begin
