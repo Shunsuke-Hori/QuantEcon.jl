@@ -23,6 +23,18 @@ function hp_filter(y::AbstractVector{T}, λ::Real) where T <: Real
     return y_cyclical, y_trend
 end
 
+function hp_filter(y::AbstractVector{T}, λ::Real, ::Val{:kalman}) where T <: Real
+    A = [2 -1;
+         1  0]
+    G = [1 0]
+    Q = [1 0;
+         0 0]
+    R = fill(λ, 1, 1)
+    k = Kalman(A, G, Q, R)
+    set_state!(k, [0, 0], fill(1e16, 2, 2))
+    x_smoothed, _, _ = smooth(k, y')
+    return y-x_smoothed, x_smoothed
+end
 @doc doc"""
 This function applies "Hamilton filter" to `AbstractVector`.
 
