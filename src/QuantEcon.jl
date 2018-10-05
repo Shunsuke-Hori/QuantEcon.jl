@@ -147,7 +147,8 @@ export
 
 # filter
     hp_filter,
-    hamilton_filter
+    hamilton_filter,
+    hp_filter_bykalman
 
 
 include("sampler.jl")

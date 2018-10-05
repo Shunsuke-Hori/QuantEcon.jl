@@ -1,3 +1,5 @@
+import Optim
+
 @doc doc"""
 apply Hodrick-Prescott filter to `AbstractVector`.
 
@@ -23,18 +25,37 @@ function hp_filter(y::AbstractVector{T}, λ::Real) where T <: Real
     return y_cyclical, y_trend
 end
 
-function hp_filter(y::AbstractVector{T}, λ::Real, ::Val{:kalman}) where T <: Real
+@doc doc"""
+Apply HP filter to `y` by Kalman smoothing
+
+##### Arguments
+- `y::AbstractVector` : data to be detrended
+- `λ::Real` : penalty on variation in trend
+
+##### Returns
+- `y_cyclical::Vector`: cyclical component
+- `y_trend::Vector`: trend component
+"""
+function hp_filter_bykalman(y::AbstractVector{T}, λ::Real) where T <: Real
     A = [2 -1;
          1  0]
     G = [1 0]
     Q = [1 0;
          0 0]
-    R = fill(λ, 1, 1)
+    R = [λ]
     k = Kalman(A, G, Q, R)
-    set_state!(k, [0, 0], fill(1e16, 2, 2))
+    function obj(x_init)
+        set_state!(k, x_init, fill(1000000000000000, 2, 2))
+        return -compute_loglikelihood(k, y')
+    end
+    res = Optim.optimize(obj, zeros(2), Optim.NelderMead(),
+                         Optim.Options(g_tol=1e-20, iterations=5_000))
+    x_init = Optim.minimizer(res)
+    set_state!(k, x_init, fill(1e16, 2, 2))
     x_smoothed, _, _ = smooth(k, y')
-    return y-x_smoothed, x_smoothed
+    return y-x_smoothed[1, :], x_smoothed[1, :]
 end
+
 @doc doc"""
 This function applies "Hamilton filter" to `AbstractVector`.
 
