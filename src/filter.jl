@@ -294,3 +294,7 @@ function plot_state_probability(rsm::RegimeSwitchingModel; args...)
     p = Plots.plot(rsm.prob_smoothed, layout = (rsm.M, 1); args...)
     return p
 end
+function plot_state_probability(x::AbstractVector, rsm::RegimeSwitchingModel; args...) 
+    p = Plots.plot(x, rsm.prob_smoothed, layout = (rsm.M, 1); args...)
+    return p
+end
