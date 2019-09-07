@@ -290,10 +290,7 @@ function smooth!(rsm::RegimeSwitchingModel,
     verbose ? (return p_s_joint_smoothed) : (return nothing) 
 end
 
-function plot_state_probability(rsm::RegimeSwitchingModel; label=["state $s" for s in 1:rsm.M], args...) 
-    p = Plots.plot(layout = (rsm.M, 1); label=label, args...)
-    for s in 1:rsm.M
-        Plots.plot!(p[s], rsm.prob_smoothed[:, s])
-    end
+function plot_state_probability(rsm::RegimeSwitchingModel; args...) 
+    p = Plots.plot(rsm.prob_smoothed, layout = (rsm.M, 1); args...)
     return p
 end
